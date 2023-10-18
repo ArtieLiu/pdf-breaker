@@ -3,8 +3,8 @@ import shutil
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
-book_name = "visual group theory"
-breaks = {
+BOOK_NAME = "visual group theory"
+BREAKS = {
     1: "cover1",
     10: "preface",
     12: "contents",
@@ -49,8 +49,8 @@ class Writer:
     def clear(self):
         self.pdf_writer = PdfFileWriter()
 
-    def dump_pages_to(self, title):
-        output_file_path = os.path.join(book_name, f"{self.prefix} {title}.pdf")
+    def dump_pages_to(self, dirname, title):
+        output_file_path = os.path.join(dirname, f"{self.prefix} {title}.pdf")
         self.prefix += 1
         with open(output_file_path, 'wb') as f:
             self.pdf_writer.write(f)
@@ -68,9 +68,9 @@ def split_book(book_name, breaks: dict):
         writer.add_page(reader.get_page_content(page_number))
 
         if reader.next_page(page_number) in breaks.keys() or reader.is_last_page(page_number):
-            writer.dump_pages_to(cache_title)
+            writer.dump_pages_to(book_name, cache_title)
             writer.clear()
 
 
 if __name__ == '__main__':
-    split_book(book_name, breaks)
+    split_book(BOOK_NAME, BREAKS)
