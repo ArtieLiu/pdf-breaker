@@ -1,57 +1,71 @@
 import os
+import shutil
+
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
 book_name = "visual group theory"
-break_points = {
+breaks = {
     1: "cover1",
     10: "preface",
     12: "contents",
     16: "overview",
     18: "ch1",
     276: "answers",
-    304: "index"
+    304: "index",
+    312: "about",
 }
 PREFIX = 0
 
 
-def write(name, cache_writer, ):
-    def make_book_dir_if_not_exist():
-        if os.path.isdir(book_name):
-            return
-        else:
-            os.mkdir(book_name)
+class Reader:
+    def __init__(self, book):
+        self.book = book
+        self.pdf_reader = PdfFileReader(book + ".pdf")
+        self.all_pages = range(1, len(self.pdf_reader.pages) + 1)
 
-    make_book_dir_if_not_exist()
-    global PREFIX
-    output_file_path = os.path.join(book_name, f"{PREFIX} {name}.pdf")
-    PREFIX += 1
-    with open(output_file_path, 'wb') as f:
-        cache_writer.write(f)
+    def get_page(self, page_number):
+        return self.pdf_reader.getPage(page_number - 1)
+
+
+def make_or_empty_dir(folder):
+    if os.path.isdir(folder):
+        shutil.rmtree(folder)
+    os.mkdir(folder)
+
+
+class Writer:
+    def __init__(self):
+        self.pdf_writer = PdfFileWriter()
+        self.prefix = 0
+
+    def add_page(self, page):
+        self.pdf_writer.addPage(page)
+
+    def clear(self):
+        self.pdf_writer = PdfFileWriter()
+
+    def dump_pages_to(self, folder, title):
+        output_file_path = os.path.join(book_name, f"{self.prefix} {title}.pdf")
+        self.prefix += 1
+        with open(output_file_path, 'wb') as f:
+            self.pdf_writer.write(f)
 
 
 def split_book(book_name, breaks: dict):
-    def read_pdf():
-        book_pdf = book_name + '.pdf'
-        return PdfFileReader(book_pdf)
+    reader = Reader(book_name)
+    writer = Writer()
+    make_or_empty_dir(book_name)
 
-    def get_page(page_number):
-        return reader.getPage(page_number - 1)
-
-    reader = read_pdf()
-    cache_writer = PdfFileWriter()
-    cache_title = ""
-
-    for page_number in range(1, len(reader.pages) + 1):
+    for page_number in reader.all_pages:
         if page_number in breaks.keys():
             cache_title = breaks[page_number]
 
-        page = get_page(page_number)
-        cache_writer.addPage(page)
+        writer.add_page(reader.get_page(page_number))
 
         if page_number + 1 in breaks.keys():
-            write(cache_title, cache_writer)
-            cache_writer = PdfFileWriter()
+            writer.dump_pages_to(book_name, cache_title)
+            writer.clear()
 
 
 if __name__ == '__main__':
-    split_book(book_name, break_points)
+    split_book(book_name, breaks)
