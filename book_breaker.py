@@ -29,17 +29,15 @@ def write(name, cache_writer, ):
         cache_writer.write(f)
 
 
-def minus_one(number):
-    return number - 1
-
-
-def read_pdf(book_name):
-    book_pdf = book_name + '.pdf'
-    return PdfFileReader(book_pdf)
-
-
 def split_book(book_name, breaks: dict):
-    reader = read_pdf(book_name)
+    def read_pdf():
+        book_pdf = book_name + '.pdf'
+        return PdfFileReader(book_pdf)
+
+    def get_page(page_number):
+        return reader.getPage(page_number - 1)
+
+    reader = read_pdf()
     cache_writer = PdfFileWriter()
     cache_title = ""
 
@@ -47,7 +45,7 @@ def split_book(book_name, breaks: dict):
         if page_number in breaks.keys():
             cache_title = breaks[page_number]
 
-        page = reader.getPage(minus_one(page_number))
+        page = get_page(page_number)
         cache_writer.addPage(page)
 
         if page_number + 1 in breaks.keys():
