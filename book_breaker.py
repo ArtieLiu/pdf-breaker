@@ -12,19 +12,24 @@ breaks = {
     18: "ch1",
     276: "answers",
     304: "index",
-    312: "about",
+    310: "index2",
 }
-PREFIX = 0
 
 
 class Reader:
     def __init__(self, book):
         self.book = book
         self.pdf_reader = PdfFileReader(book + ".pdf")
-        self.all_pages = range(1, len(self.pdf_reader.pages) + 1)
+        self.all_page_numbers = range(1, len(self.pdf_reader.pages) + 1)
 
-    def get_page(self, page_number):
+    def get_page_content(self, page_number):
         return self.pdf_reader.getPage(page_number - 1)
+
+    def is_last_page(self, page_number):
+        return len(self.pdf_reader.pages) == page_number
+
+    def next_page(self, page_number):
+        return page_number + 1
 
 
 def make_or_empty_dir(folder):
@@ -44,7 +49,7 @@ class Writer:
     def clear(self):
         self.pdf_writer = PdfFileWriter()
 
-    def dump_pages_to(self, folder, title):
+    def dump_pages_to(self, title):
         output_file_path = os.path.join(book_name, f"{self.prefix} {title}.pdf")
         self.prefix += 1
         with open(output_file_path, 'wb') as f:
@@ -56,14 +61,14 @@ def split_book(book_name, breaks: dict):
     writer = Writer()
     make_or_empty_dir(book_name)
 
-    for page_number in reader.all_pages:
+    for page_number in reader.all_page_numbers:
         if page_number in breaks.keys():
             cache_title = breaks[page_number]
 
-        writer.add_page(reader.get_page(page_number))
+        writer.add_page(reader.get_page_content(page_number))
 
-        if page_number + 1 in breaks.keys():
-            writer.dump_pages_to(book_name, cache_title)
+        if reader.next_page(page_number) in breaks.keys() or reader.is_last_page(page_number):
+            writer.dump_pages_to(cache_title)
             writer.clear()
 
 
