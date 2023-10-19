@@ -3,16 +3,21 @@ import shutil
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
-BOOK_NAME = "visual group theory"
+BOOK_NAME = "Kubernetes in Action"
 BREAKS = {
-    1: "cover1",
-    10: "preface",
-    12: "contents",
-    16: "overview",
-    18: "ch1",
-    276: "answers",
-    304: "index",
-    310: "index2",
+    1: "front cover",
+    5: "cover",
+    9: "brief contents",
+    11: "contents",
+    23: "preface",
+    25: "ack",
+    27: "about",
+    33: "part 1",
+    87: "part 2",
+    341: "part 3",
+    566: "appendix",
+    593: "index",
+    627: "back cover"
 }
 
 
@@ -41,7 +46,7 @@ def make_or_empty_dir(folder):
 class Writer:
     def __init__(self):
         self.pdf_writer = PdfFileWriter()
-        self.prefix = 0
+        self.batch_num = 1
 
     def add_page(self, page):
         self.pdf_writer.addPage(page)
@@ -49,11 +54,20 @@ class Writer:
     def clear(self):
         self.pdf_writer = PdfFileWriter()
 
+    def total_pages(self):
+        return len(self.pdf_writer.pages)
+
     def dump_pages_to(self, dirname, title):
-        output_file_path = os.path.join(dirname, f"{self.prefix} {title}.pdf")
-        self.prefix += 1
+        batch_number = str(self.batch_num).ljust(3)
+        total_pages = str(self.total_pages()).ljust(3)
+        filename = f"{batch_number} {total_pages} {title}.pdf"
+
+        output_file_path = os.path.join(dirname, filename)
+
         with open(output_file_path, 'wb') as f:
             self.pdf_writer.write(f)
+
+        self.batch_num += 1
 
 
 def split_book(book_name, breaks: dict):
