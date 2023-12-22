@@ -3,23 +3,34 @@ import shutil
 
 from pypdf import PdfReader, PdfWriter
 
-BOOK_NAME = "Istio in Action"
+BOOK_NAME = "refactoring"
 BREAKS = {
     1: "front",
     4: "cover",
-    8: "brief_contents",
-    10: "detailed_contents",
-    18: "forward",
-    20: "preface",
-    22: "ack",
-    24: "about",
-    30: "p1",
-    104: "p2",
-    294: "p3",
-    346: "p4",
-    430: "appendix",
-    464: "index",
-    480: "back"
+    8: "contents",
+    14: "forward",
+    16: "preface",
+    24: "ch1-8",
+    260: "ch9-15",
+    436: "ref",
+    442: "index",
+    458: "other"
+}
+
+book = {
+    "book": "refactoring.pdf",
+    "sections": {
+        "front": 1,
+        "cover": 3,
+        "toc": 10,
+        "chapters": 15,
+        "rear": 160
+    }
+}
+
+chapters = {
+    "ch1": 1,
+    "ch2": 20
 }
 
 
@@ -61,7 +72,7 @@ class Writer:
 
     def dump_pages_to(self, dirname, title):
         batch_number = str(self.batch_num).ljust(3)
-        total_pages = str(self.total_pages()).ljust(3)
+        total_pages = str(self.total_pages()).ljust(4)
         filename = f"{batch_number} {total_pages} {title}.pdf"
 
         output_file_path = os.path.join(dirname, filename)
@@ -78,6 +89,7 @@ def split_book(book_name, breaks: dict):
     make_or_empty_dir(book_name)
 
     for page_number in reader.all_page_numbers:
+        print(f"doing {page_number}")
         if page_number in breaks.keys():
             cache_title = breaks[page_number]
 
