@@ -4,33 +4,21 @@ import shutil
 from pypdf import PdfReader, PdfWriter
 
 BOOK_NAME = "refactoring"
-BREAKS = {
-    1: "front",
-    4: "cover",
-    8: "contents",
-    14: "forward",
-    16: "preface",
-    24: "ch1-8",
-    260: "ch9-15",
-    436: "ref",
-    442: "index",
-    458: "other"
+
+rough_breaks = {
+    "front": 1,
+    "cover": 4,
+    "contents": 8,
+    "forward": 14,
+    "preface": 16,
+    "chapters": 24,
 }
 
-book = {
-    "book": "refactoring.pdf",
-    "sections": {
-        "front": 1,
-        "cover": 3,
-        "toc": 10,
-        "chapters": 15,
-        "rear": 160
-    }
-}
-
-chapters = {
+chapter_breaks = {
     "ch1": 1,
-    "ch2": 20
+    "ch8": 169,
+    "refs": 413,
+    "index": 419
 }
 
 
@@ -83,7 +71,7 @@ class Writer:
         self.batch_num += 1
 
 
-def split_book(book_name, breaks: dict):
+def split_pdf(book_name, breaks: dict):
     reader = Reader(book_name)
     writer = Writer()
     make_or_empty_dir(book_name)
@@ -100,5 +88,20 @@ def split_book(book_name, breaks: dict):
             writer.clear()
 
 
+def rough_split(BOOK_NAME, rough_breaks):
+    split_pdf(BOOK_NAME, rough_breaks)
+
+
+def split_chapters(filename, chapter_breaks):
+    split_pdf(BOOK_NAME, chapter_breaks)
+
+
+def remove_file(filename):
+    pass
+
+
 if __name__ == '__main__':
-    split_book(BOOK_NAME, BREAKS)
+    # split_book(BOOK_NAME, BREAKS)
+    rough_split(BOOK_NAME, rough_breaks)
+    split_chapters("chapters.pdf", chapter_breaks)
+    remove_file("chapters.pdf")
