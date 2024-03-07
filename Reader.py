@@ -10,10 +10,10 @@ class Reader:
         self.current_page = 1
         self.page_numbers = range(1, len(self.pdf_reader.pages) + 1)
 
-    def get_page(self, page_number):
+    def get_page_content(self, page_number):
         return self.pdf_reader.pages[page_number - 1]
 
-    def next_page(self):
+    def next_page_number(self):
         return self.current_page + 1
 
     def turn_page(self):
