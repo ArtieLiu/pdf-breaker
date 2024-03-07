@@ -1,26 +1,9 @@
 import os
+from pathlib import Path
 import shutil
 
 from Reader import Reader
 from Writer import Writer
-
-BOOK_NAME = "design patterns"
-
-rough_breaks = {
-    1: "front",
-    7: "cover",
-    11: "contents",
-    15: "preface",
-    17: "forward",
-    21: "chapters",
-}
-
-chapter_breaks = {
-    "1 case study": 1,
-    "2 design pattern catalog": 79,
-    "3 appendix": 359,
-    "4 index": 383
-}
 
 
 def make_or_empty_dir(folder):
@@ -29,15 +12,19 @@ def make_or_empty_dir(folder):
     os.mkdir(folder)
 
 
-def split_pdf(pdf_name, breaks: dict):
+def filename_of(filepath):
+    return Path(filepath).stem
+
+
+def split_pdf(breaks: dict, filepath):
     def is_end_of_section():
         return reader.next_page_number() in breaks.keys()
 
     def is_end_of_book():
         return reader.is_last_page()
 
-    reader = Reader(filepath=f"./{pdf_name}.pdf")
-    writer = Writer(write_to=pdf_name)
+    reader = Reader(filepath=filepath)
+    writer = Writer(write_to=filename_of(filepath))
 
     for page_number in reader.page_numbers:
         if page_number in breaks.keys():
@@ -52,17 +39,25 @@ def split_pdf(pdf_name, breaks: dict):
         reader.turn_page()
 
 
-def rough_split(BOOK_NAME, rough_breaks):
-    split_pdf(BOOK_NAME, rough_breaks)
-
-
-def split_chapters(filename, chapter_breaks):
-    split_pdf(BOOK_NAME, chapter_breaks)
-
-
 if __name__ == '__main__':
-    make_or_empty_dir(BOOK_NAME)
+    book = "design patterns.pdf"
 
-    rough_split(BOOK_NAME, rough_breaks)
-    # split_chapters("6 397 chapters.pdf", chapter_breaks)
-    # remove_file("chapters.pdf")
+    rough_breaks = {
+        1: "front",
+        7: "cover",
+        11: "contents",
+        15: "preface",
+        17: "forward",
+        21: "chapters",
+    }
+
+    chapter_breaks = {
+        "1 case study": 1,
+        "2 design pattern catalog": 79,
+        "3 appendix": 359,
+        "4 index": 383
+    }
+
+    make_or_empty_dir(filename_of(book))
+
+    split_pdf(rough_breaks, filepath=book)
