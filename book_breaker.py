@@ -36,7 +36,7 @@ def split_pdf(pdf_name, breaks: dict):
     def is_end_of_book():
         return reader.is_last_page()
 
-    reader = Reader(pdf_name)
+    reader = Reader(filepath=f"./{pdf_name}.pdf")
     writer = Writer(write_to=pdf_name)
 
     for page_number in reader.page_numbers:

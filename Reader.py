@@ -4,9 +4,8 @@ from pypdf import PdfReader
 class Reader:
     current_page: int
 
-    def __init__(self, book):
-        self.book = book
-        self.pdf_reader = PdfReader(book + ".pdf")
+    def __init__(self, filepath):
+        self.pdf_reader = PdfReader(filepath)
         self.current_page = 1
         self.page_numbers = range(1, len(self.pdf_reader.pages) + 1)
 
