@@ -35,25 +35,28 @@ def split_pdf(breaks: dict, filepath, output_path):
 
 
 if __name__ == '__main__':
-    book = "design patterns.pdf"
+    book = "refactoring.pdf"
     rough_breaks = {
         1: "front",
-        7: "cover",
-        11: "contents",
-        15: "preface",
-        17: "forward",
-        21: "chapters",
+        4: "cover",
+        8: "contents",
+        14: "forward",
+        24: "chapters",
+        436: "ref",
+        442: "index",
+        455: "list of refactorings",
+        458: "others"
     }
     split_pdf(breaks=rough_breaks,
               filepath=book,
               output_path=filename_of(book))
 
-    chapter_breaks = {
-        1: "case study",
-        79: "design pattern catalog",
-        359: "appendix",
-        383: "index"
-    }
-    split_pdf(breaks=chapter_breaks,
-              filepath='./design patterns/6   397  chapters.pdf',
-              output_path=f"{filename_of(book)}/chapters")
+    # chapter_breaks = {
+    #     1: "case study",
+    #     79: "design pattern catalog",
+    #     359: "appendix",
+    #     383: "index"
+    # }
+    # split_pdf(breaks=chapter_breaks,
+    #           filepath='./design patterns/6   397  chapters.pdf',
+    #           output_path=f"{filename_of(book)}/chapters")
