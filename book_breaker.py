@@ -1,5 +1,5 @@
-from Splitter import split_pdf
-from utils import filename_of
+from src.main.Splitter import split_pdf
+from src.main.utils import filename_of
 
 if __name__ == '__main__':
     book = "refactoring.pdf"
@@ -23,5 +23,5 @@ if __name__ == '__main__':
         237: "ch9-15",
     }
     split_pdf(breaks=chapter_breaks,
-              filepath='./refactoring/5   412  chapters.pdf',
+              filepath='refactoring/5   412  chapters.pdf',
               output_path=f"{filename_of(book)}/chapters")

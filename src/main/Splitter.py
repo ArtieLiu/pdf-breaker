@@ -1,8 +1,7 @@
 from os import mkdir
-from pathlib import Path
 
-from Reader import Reader
-from Writer import Writer
+from src.main.Reader import Reader
+from src.main.Writer import Writer
 
 
 def split_pdf(breaks: dict, filepath, output_path):
