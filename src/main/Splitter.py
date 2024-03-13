@@ -1,4 +1,4 @@
-from os import mkdir
+import os
 
 from src.main.Reader import Reader
 from src.main.Writer import Writer
@@ -11,7 +11,7 @@ def split_pdf(breaks: dict, filepath, output_path):
     def is_end_of_book():
         return reader.is_last_page()
 
-    mkdir(output_path)
+    os.makedirs(output_path)
 
     reader = Reader(filepath=filepath)
     writer = Writer(write_to=output_path)
