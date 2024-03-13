@@ -7,8 +7,8 @@ from pypdf import PdfReader
 from src.main.Splitter import split_pdf
 
 dirname = os.path.dirname(__file__)
-PDF_FILE = os.path.join(dirname, './test_data/refactoring.pdf')
-OUTPUT_DIR = os.path.join(dirname, './test_data/refactoring')
+PDF_FILE = os.path.join(dirname, 'test_data/refactoring.pdf')
+OUTPUT_DIR = os.path.join(dirname, 'test_data/refactoring')
 
 
 class Test(TestCase):
