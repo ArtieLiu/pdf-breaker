@@ -1,3 +1,4 @@
+import os.path
 import shutil
 from unittest import TestCase
 
@@ -12,7 +13,8 @@ OUTPUT_DIR = './test_data/refactoring'
 class Test(TestCase):
 
     def tearDown(self):
-        shutil.rmtree(OUTPUT_DIR)
+        if os.path.isdir(OUTPUT_DIR):
+            shutil.rmtree(OUTPUT_DIR)
 
     def test_split_pdf(self):
         breaks = {
