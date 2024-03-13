@@ -1,5 +1,5 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Run test
+run-name: Running test
 on: [push]
 jobs:
   Explore-GitHub-Actions:
@@ -17,4 +17,4 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
-          pytest ./src/test/test_Splitter.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+          pytest ./src/test/test_Splitter.py 
